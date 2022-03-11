@@ -22,24 +22,23 @@ const App = () => {
       })
   }, [])
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault()
-    try {
-      const user =  loginService.login({
-        username,password
-      })
-
-      noteService.setToken(user.token)
-      console.log(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch(exception) {
-      setErrorMessage('Wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      },5000)
-    }
+    try{
+    const user =  await loginService.login({
+      username,password
+    })
+    noteService.setToken(user.token)
+    console.log(user.token)
+    setUser(user)
+    setUsername('')
+    setPassword('')
+  } catch(exception) {
+    setErrorMessage('Wrong credentials')
+    setTimeout(() => {
+      setErrorMessage(null)
+    },5000)
+  }
 
   }
 

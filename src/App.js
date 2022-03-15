@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react'
 import loginService from './services/login'
 import Note from './components/Note'
 import Notification from './components/Notification'
+import NoteForm from './components/NoteForm'
 
 import noteService from './services/notes'
+import LoginForm from './components/LoginForm'
+import Toggleable from './components/Toggleable'
 
 const App = () => {
+  const [loginVisible,setLoginVisible] = useState(false)
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
@@ -100,70 +104,85 @@ const App = () => {
     ? notes
     : notes.filter(note => note.important)
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input type = "text"
-        value={username}
-        name="Username"
-        onChange={({target}) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-        type="password"
-        value={password}
-        name="Password"
-        onChange={({target}) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-      </form>
-  )
+    // const loginForm = () => {
+    //   const hideWhenVisible = {display:loginVisible ? 'none':''}
+    //   const showWhenVisible = {display:loginVisible ? '' : 'none'}
 
-  const noteForm = () => (
-    <form onSubmit={addNote}>
-      <input
-      value={newNote}
-      onChange={handleNoteChange}
-      />
-      <button type="submit">save</button>
-      </form>
-  )
+    //   return (
+    //     <div>
+    //       <div style={hideWhenVisible}>
+    //         <button onClick={() => setLoginVisible(true)}>log in</button>
+    //       </div>
+    //       <div style={showWhenVisible}>
+    //         <LoginForm
+    //         username={username}
+    //         password={password}
+    //         handleUsernameChange={({target}) => setUsername(target.value)}
+    //         handlePasswordChange={({target}) => setPassword(target.value)}
+    //         handleSubmit={handleLogin}
+    //         />
+    //         <button onClick={() => setLoginVisible(false)}>Cancel</button>
+    //       </div>
+    //     </div>
+    //   )
+    // }
+
+  // const noteForm = () => (
+  //   <form onSubmit={addNote}>
+  //     <input
+  //     value={newNote}
+  //     onChange={handleNoteChange}
+  //     />
+  //     <button type="submit">save</button>
+  //     </form>
+  // )
+
 
   return (
     <div>
-      <h1>
-        Notes
-      </h1>
-      <Notification message={errorMessage}/>
+      <h1>Notes</h1>
+      <Notification message={errorMessage} />
 
       {user === null ?
-      loginForm() :
-      <div>
-        <p>{user.name} logged in</p>
-        {noteForm()}
+        <Toggleable buttonLabel='login'>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+        </Toggleable> :
+        <div>
+          <p>{user.name} logged in</p>
+          <Toggleable buttonLabel="new note">
+            <NoteForm
+              onSubmit={addNote}
+              value={newNote}
+              handleChange={handleNoteChange}
+            />
+          </Toggleable>
         </div>
-    }
+      }
 
-    <div>
-      <button onClick={() => setShowAll(!showAll)}>
-        show {showAll ? 'important' : 'all'}
+      <div>
+        <button onClick={() => setShowAll(!showAll)}>
+          show {showAll ? 'important' : 'all' }
         </button>
-    </div>
-    <ul>
-      {notesToShow.map((note) =>
-        <Note
-          key={note.id}
-          note={note}
-          toggleImportance={() => toggleImportanceOf(note.id)}
-        />
+      </div>
+      <ul>
+        {notesToShow.map(note =>
+          <Note
+            key={note.id}
+            note={note}
+            toggleImportance={() => toggleImportanceOf(note.id)}
+          />
         )}
-    </ul>
+      </ul>
+
 
     </div>
   )
-      }
-      export default App
+}
+
+export default App

@@ -9,7 +9,7 @@ const Footer = () => {
     <div style={footerStyle}>
       <br/>
       <em>Made by Manish</em>
-      </div>
+    </div>
   )
 
 }
